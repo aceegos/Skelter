@@ -33,7 +33,7 @@ function start(){
  for(var i=0;i<7;i++){human.push(deck.pop());cpu.push(deck.pop())}
  var opening=deck.findIndex(function(c){return ["2","3","4","5","6","7","8","9"].indexOf(c.r)>=0});
  tableCard=deck.splice(opening,1)[0];turn=gameNumber%2?"human":"computer";el("chooser").className="hide";
- message(turn==="human"?"Your turn":"Computer starts");render();if(turn==="computer")setTimeout(computerTurn,650);
+ message(turn==="human"?"Your turn":"Computer starts");render();if(turn==="computer")setTimeout(computerTurn,2000);
 }
 function finish(who,c,keepWild){
  if(!keepWild)wildSuit=null;
@@ -42,7 +42,7 @@ function finish(who,c,keepWild){
  if(hand.length===0){gameOver=true;render();message(who==="human"?"YOU WIN! 💀":"COMPUTER WINS");flash(who==="human"?"YOU WIN!":"COMPUTER WINS");return}
  if(hand.length===1&&who==="computer"){cpuCalled=true;flash("SKELTER!")}
  turn=who==="human"?"computer":"human";render();
- if(turn==="computer"){message("Computer turn");setTimeout(computerTurn,650)}else message("Your turn");
+ if(turn==="computer"){message("Computer turn");setTimeout(computerTurn,2000)}else message("Your turn");
 }
 function playHuman(i){
  if(turn!=="human"||gameOver||awaitingSuit)return;var c=human[i];if(!c||!legal(c,"human"))return;
@@ -55,7 +55,7 @@ function drawHuman(){
  if(turn!=="human"||gameOver||awaitingSuit)return;
  var has=human.some(function(c){return legal(c,"human")});
  if(has&&!humanPenalty){message("You have a legal card to play");return}
- if(deck.length)human.push(deck.pop());humanPenalty=false;humanCalled=false;turn="computer";message("You draw one card. Turn complete.");render();setTimeout(computerTurn,650);
+ if(deck.length)human.push(deck.pop());humanPenalty=false;humanCalled=false;turn="computer";message("You draw one card. Turn complete.");render();setTimeout(computerTurn,2000);
 }
 function computerTurn(){
  if(turn!=="computer"||gameOver)return;
