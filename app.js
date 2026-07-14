@@ -68,7 +68,7 @@ function computerTurn(){
  else finish("computer",c,false);
 }
 el("newGame").onclick=start;
-el("skelter").onclick=function(){if(human.length===1&&turn==="computer"){humanCalled=true;flash("🧙‍♂️ SKELTER!");message("🧙‍♀️ SKELTER called!");render()}};
+el("skelter").onclick=function(){if(human.length===1&&turn==="computer"){humanCalled=true;flash("🧙‍♂️ SKELTER!");message("🧙‍♂️ SKELTER called!");render()}};
 Array.prototype.forEach.call(document.querySelectorAll("[data-suit]"),function(b){b.onclick=function(){wildSuit=b.getAttribute("data-suit");awaitingSuit=false;el("chooser").className="hide";flash("YOU CHOOSE "+symbols[wildSuit]);finish("human",tableCard,true)}});
 
 // SKELTER soundtrack — 4-second fade-in
