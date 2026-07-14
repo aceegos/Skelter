@@ -86,10 +86,10 @@ el("newGame").addEventListener("click",fadeMusicIn);
 // 20-second animated rules intro
 var rulesIntro=el("rulesIntro"),closeIntro=el("closeIntro"),replayIntro=el("replayIntro"),introTimer=null;
 function hideRulesIntro(){if(introTimer){clearTimeout(introTimer);introTimer=null}if(rulesIntro)rulesIntro.style.display="none"}
-function playRulesIntro(){if(!rulesIntro)return;if(introTimer)clearTimeout(introTimer);rulesIntro.style.display="flex";var box=rulesIntro.querySelector(".intro-box");box.classList.remove("intro-running");void box.offsetWidth;box.classList.add("intro-running");introTimer=setTimeout(hideRulesIntro,25000)}
+function playRulesIntro(){if(!rulesIntro)return;if(introTimer)clearTimeout(introTimer);rulesIntro.style.display="flex";var box=rulesIntro.querySelector(".intro-box");box.classList.remove("intro-running");void box.offsetWidth;box.classList.add("intro-running");introTimer=setTimeout(hideRulesIntro,26000)}
 if(closeIntro)closeIntro.addEventListener("click",hideRulesIntro);
 if(replayIntro)replayIntro.addEventListener("click",playRulesIntro);
-introTimer=setTimeout(hideRulesIntro,25000);
+introTimer=setTimeout(hideRulesIntro,26000);
 
 
 // Full rules overlay
