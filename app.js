@@ -79,5 +79,11 @@ function pauseMusic(){if(fadeTimer){clearInterval(fadeTimer);fadeTimer=null}soun
 musicButton.onclick=function(e){e.preventDefault();e.stopPropagation();if(soundtrack.paused)fadeMusicIn();else pauseMusic()};
 el("newGame").addEventListener("click",fadeMusicIn);
 
+// 20-second animated rules intro
+var rulesIntro=el("rulesIntro"),closeIntro=el("closeIntro"),introTimer=null;
+function hideRulesIntro(){if(introTimer){clearTimeout(introTimer);introTimer=null}if(rulesIntro)rulesIntro.style.display="none"}
+if(closeIntro)closeIntro.addEventListener("click",hideRulesIntro);
+introTimer=setTimeout(hideRulesIntro,20000);
+
 start();
 })();
