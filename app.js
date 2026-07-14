@@ -28,7 +28,10 @@ function render(){
  el("table").innerHTML=html(tableCard,false,0);el("draw").innerHTML='<div id="pile" class="card back">💀</div>';
  el("human").innerHTML=human.map(function(c,i){return html(c,turn==="human"&&!gameOver&&!humanPenalty&&!awaitingSuit&&legal(c,"human"),i)}).join("");
  Array.prototype.forEach.call(el("human").querySelectorAll("[data-i]"),function(x){x.onclick=function(){playHuman(parseInt(x.getAttribute("data-i"),10))}});
- el("pile").onclick=drawHuman;
+ var pile=el("pile");
+ pile.onclick=drawHuman;
+ var humanHasLegal=human.some(function(c){return legal(c,"human")});
+ if(turn==="human"&&!gameOver&&!awaitingSuit&&!humanPenalty&&!humanHasLegal){pile.classList.add("draw-only-pulse")}
  el("house").textContent=house?(house==="human"?"YOU HAVE THE HOUSE 🏠":"COMPUTER HAS THE HOUSE 🏠"):"NO ONE HAS THE HOUSE";
  el("skelter").disabled=!(turn==="computer"&&human.length===1&&!humanCalled&&!gameOver);
 }
@@ -86,10 +89,10 @@ el("newGame").addEventListener("click",fadeMusicIn);
 // 20-second animated rules intro
 var rulesIntro=el("rulesIntro"),closeIntro=el("closeIntro"),replayIntro=el("replayIntro"),introTimer=null;
 function hideRulesIntro(){if(introTimer){clearTimeout(introTimer);introTimer=null}if(rulesIntro)rulesIntro.style.display="none"}
-function playRulesIntro(){if(!rulesIntro)return;if(introTimer)clearTimeout(introTimer);rulesIntro.style.display="flex";var box=rulesIntro.querySelector(".intro-box");box.classList.remove("intro-running");void box.offsetWidth;box.classList.add("intro-running");introTimer=setTimeout(hideRulesIntro,26000)}
+function playRulesIntro(){if(!rulesIntro)return;if(introTimer)clearTimeout(introTimer);rulesIntro.style.display="flex";var box=rulesIntro.querySelector(".intro-box");box.classList.remove("intro-running");void box.offsetWidth;box.classList.add("intro-running");introTimer=setTimeout(hideRulesIntro,25000)}
 if(closeIntro)closeIntro.addEventListener("click",hideRulesIntro);
 if(replayIntro)replayIntro.addEventListener("click",playRulesIntro);
-introTimer=setTimeout(hideRulesIntro,26000);
+introTimer=setTimeout(hideRulesIntro,25000);
 
 
 // Full rules overlay
