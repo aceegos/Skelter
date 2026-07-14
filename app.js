@@ -17,8 +17,11 @@ function legal(c,who){
 }
 function text(c){return c.r==="JOKER"?"🃏":c.r+symbols[c.s]}
 function html(c,ok,i){var cls="card"+((c.s==="H"||c.s==="D")?" red":"")+(ok?" legal":"");var style=c.r==="JOKER"?' style="font-size:52px;line-height:1"':"";return '<div class="'+cls+'"'+(ok?' data-i="'+i+'"':"")+style+'>'+text(c)+"</div>"}
-function message(x){el("status").textContent=x}
-function flash(x){var f=el("flash");f.textContent=x;f.style.display="flex";setTimeout(function(){f.style.display="none"},2000)}
+var turnReminderTimer=null,flashQueue=[],flashBusy=false;
+function stopTurnReminder(){if(turnReminderTimer){clearTimeout(turnReminderTimer);turnReminderTimer=null}el("status").classList.remove("your-turn-pulse")}
+function message(x){stopTurnReminder();el("status").textContent=x;if(x==="Your turn"&&turn==="human"&&!gameOver){turnReminderTimer=setTimeout(function(){if(turn==="human"&&!gameOver&&!awaitingSuit)el("status").classList.add("your-turn-pulse")},3000)}}
+function runFlashQueue(){if(flashBusy||!flashQueue.length)return;flashBusy=true;var item=flashQueue.shift(),f=el("flash");f.textContent=item.x;f.style.display="flex";setTimeout(function(){f.style.display="none";flashBusy=false;if(item.cb)item.cb();setTimeout(runFlashQueue,30)},item.ms)}
+function flash(x,ms,cb){flashQueue.push({x:x,ms:ms||2000,cb:cb});runFlashQueue()}
 function render(){
  el("cpuCount").textContent="("+cpu.length+")";el("humanCount").textContent="("+human.length+")";el("deckCount").textContent="("+deck.length+")";
  el("cpu").innerHTML=cpu.map(function(){return '<div class="card back">💀</div>'}).join("");
@@ -30,6 +33,7 @@ function render(){
  el("skelter").disabled=!(turn==="computer"&&human.length===1&&!humanCalled&&!gameOver);
 }
 function start(){
+ stopTurnReminder();flashQueue=[];flashBusy=false;el("flash").style.display="none";
  deck=makeDeck();human=[];cpu=[];tableCard=null;wildSuit=null;house=null;humanCalled=false;cpuCalled=false;humanPenalty=false;gameOver=false;awaitingSuit=false;firstTurn=true;gameNumber++;
  for(var i=0;i<7;i++){human.push(deck.pop());cpu.push(deck.pop())}
  var opening=deck.findIndex(function(c){return ["2","3","4","5","6","7","8","9"].indexOf(c.r)>=0});
@@ -39,8 +43,8 @@ function start(){
 function finish(who,c,keepWild){
  firstTurn=false;
  if(!keepWild)wildSuit=null;
- if(c.r==="A"||c.r==="10"||c.r==="JOKER"){var keepsHouse=house===who;house=who;flash(keepsHouse?(who==="human"?"YOU KEEP THE HOUSE":"COMPUTER KEEPS THE HOUSE"):(who==="human"?"YOU HAVE THE HOUSE":"COMPUTER HAS THE HOUSE"))}
  var hand=who==="human"?human:cpu;
+ if(c.r==="A"||c.r==="10"||c.r==="JOKER"){var keepsHouse=house===who;house=who;flash(keepsHouse?(who==="human"?"YOU KEEP THE HOUSE":"COMPUTER KEEPS THE HOUSE"):(who==="human"?"YOU HAVE THE HOUSE":"COMPUTER HAS THE HOUSE"),hand.length===1?1000:2000)}
  if(hand.length===0){gameOver=true;render();message(who==="human"?"🧙‍♂️ YOU WIN!":"💀 COMPUTER WINS!");flash(who==="human"?"🧙‍♂️ YOU WIN!":"💀 COMPUTER WINS!");return}
  if(hand.length===1&&who==="computer"){cpuCalled=true;flash("💀 SKELTER!")}
  turn=who==="human"?"computer":"human";render();
@@ -73,16 +77,18 @@ Array.prototype.forEach.call(document.querySelectorAll("[data-suit]"),function(b
 
 // SKELTER soundtrack — 4-second fade-in
 var soundtrack=new Audio("./Espionage.mp3");soundtrack.loop=true;soundtrack.volume=0;soundtrack.preload="auto";
-var fadeTimer=null,musicButton=document.createElement("button");musicButton.id="musicToggle";musicButton.type="button";musicButton.textContent="MUSIC: OFF";el("newGame").insertAdjacentElement("afterend",musicButton);
+var fadeTimer=null,musicButton=el("musicToggle");
 function fadeMusicIn(){if(fadeTimer)clearInterval(fadeTimer);soundtrack.volume=0;soundtrack.play().then(function(){musicButton.textContent="MUSIC: ON";var step=0,steps=40,target=.55;fadeTimer=setInterval(function(){step++;soundtrack.volume=Math.min(target,target*step/steps);if(step>=steps){clearInterval(fadeTimer);fadeTimer=null}},100)}).catch(function(){musicButton.textContent="MUSIC: OFF"})}
 function pauseMusic(){if(fadeTimer){clearInterval(fadeTimer);fadeTimer=null}soundtrack.pause();soundtrack.volume=0;musicButton.textContent="MUSIC: OFF"}
 musicButton.onclick=function(e){e.preventDefault();e.stopPropagation();if(soundtrack.paused)fadeMusicIn();else pauseMusic()};
 el("newGame").addEventListener("click",fadeMusicIn);
 
 // 20-second animated rules intro
-var rulesIntro=el("rulesIntro"),closeIntro=el("closeIntro"),introTimer=null;
+var rulesIntro=el("rulesIntro"),closeIntro=el("closeIntro"),replayIntro=el("replayIntro"),introTimer=null;
 function hideRulesIntro(){if(introTimer){clearTimeout(introTimer);introTimer=null}if(rulesIntro)rulesIntro.style.display="none"}
+function playRulesIntro(){if(!rulesIntro)return;if(introTimer)clearTimeout(introTimer);rulesIntro.style.display="flex";var box=rulesIntro.querySelector(".intro-box");box.classList.remove("intro-running");void box.offsetWidth;box.classList.add("intro-running");introTimer=setTimeout(hideRulesIntro,22000)}
 if(closeIntro)closeIntro.addEventListener("click",hideRulesIntro);
+if(replayIntro)replayIntro.addEventListener("click",playRulesIntro);
 introTimer=setTimeout(hideRulesIntro,22000);
 
 
