@@ -41,7 +41,7 @@ function finish(who,c,keepWild){
  if(!keepWild)wildSuit=null;
  if(c.r==="A"||c.r==="10"||c.r==="JOKER"){var keepsHouse=house===who;house=who;flash(keepsHouse?(who==="human"?"YOU KEEP THE HOUSE":"COMPUTER KEEPS THE HOUSE"):(who==="human"?"YOU HAVE THE HOUSE":"COMPUTER HAS THE HOUSE"))}
  var hand=who==="human"?human:cpu;
- if(hand.length===0){gameOver=true;render();message(who==="human"?"🧙‍♀️ YOU WIN!":"💀 COMPUTER WINS!");flash(who==="human"?"🧙‍♀️ YOU WIN!":"💀 COMPUTER WINS!");return}
+ if(hand.length===0){gameOver=true;render();message(who==="human"?"🧙 YOU WIN!":"💀 COMPUTER WINS!");flash(who==="human"?"🧙 YOU WIN!":"💀 COMPUTER WINS!");return}
  if(hand.length===1&&who==="computer"){cpuCalled=true;flash("💀 SKELTER!")}
  turn=who==="human"?"computer":"human";render();
  if(turn==="computer"){message("Computer turn");setTimeout(computerTurn,2000)}else message("Your turn");
@@ -68,7 +68,7 @@ function computerTurn(){
  else finish("computer",c,false);
 }
 el("newGame").onclick=start;
-el("skelter").onclick=function(){if(human.length===1&&turn==="computer"){humanCalled=true;flash("🧙‍♀️ SKELTER!");message("🧙‍♀️ SKELTER called!");render()}};
+el("skelter").onclick=function(){if(human.length===1&&turn==="computer"){humanCalled=true;flash("🧙 SKELTER!");message("🧙‍♀️ SKELTER called!");render()}};
 Array.prototype.forEach.call(document.querySelectorAll("[data-suit]"),function(b){b.onclick=function(){wildSuit=b.getAttribute("data-suit");awaitingSuit=false;el("chooser").className="hide";flash("YOU CHOOSE "+symbols[wildSuit]);finish("human",tableCard,true)}});
 
 // SKELTER soundtrack — 4-second fade-in
@@ -84,6 +84,15 @@ var rulesIntro=el("rulesIntro"),closeIntro=el("closeIntro"),introTimer=null;
 function hideRulesIntro(){if(introTimer){clearTimeout(introTimer);introTimer=null}if(rulesIntro)rulesIntro.style.display="none"}
 if(closeIntro)closeIntro.addEventListener("click",hideRulesIntro);
 introTimer=setTimeout(hideRulesIntro,20000);
+
+
+// Full rules overlay
+var fullRules=el("fullRules"),showRules=el("showRules"),closeRules=el("closeRules");
+function openFullRules(){if(fullRules)fullRules.style.display="flex"}
+function closeFullRules(){if(fullRules)fullRules.style.display="none"}
+if(showRules)showRules.addEventListener("click",openFullRules);
+if(closeRules)closeRules.addEventListener("click",closeFullRules);
+if(fullRules)fullRules.addEventListener("click",function(e){if(e.target===fullRules)closeFullRules()});
 
 start();
 })();
