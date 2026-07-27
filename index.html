@@ -31,7 +31,7 @@ button{padding:12px 18px;margin:6px;border:0;border-radius:24px;background:var(-
 .game-button-row{display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:nowrap;margin:12px auto}
 .game-button-row button{font-size:11px;padding:8px 9px;white-space:nowrap;min-width:0;flex:1}.game-button-row #newGame{font-size:16px;padding:12px 18px;flex:1.45}.draw-only-pulse{animation:drawOnlyPulse 1.4s ease-in-out infinite}@keyframes drawOnlyPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.14);box-shadow:0 0 24px var(--gold)}}.your-turn-pulse{animation:yourTurnPulse 2s ease-in-out infinite}@keyframes yourTurnPulse{0%,100%{opacity:1}50%{opacity:.25}}
 .ace-egos-splash{position:fixed;inset:0;z-index:10001;background:#000;display:flex;align-items:center;justify-content:center;opacity:1;animation:aceEgosOpening 3s ease-in-out forwards}
-.ace-egos-splash img{width:min(92vw,700px);height:auto;display:block}
+.ace-egos-splash img{max-width:min(80vw,560px);max-height:min(55vh,320px);width:auto;height:auto;display:block;background:#000;border-radius:24px;padding:18px;object-fit:contain}
 @keyframes aceEgosOpening{0%{opacity:0}22%,68%{opacity:1}100%{opacity:0;visibility:hidden}}
 #rulesIntro{animation-delay:0s}
 .intro-running #replayIntro{animation:introReplayHouse 20s linear 1}
